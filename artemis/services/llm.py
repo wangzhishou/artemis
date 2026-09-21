@@ -1005,6 +1005,22 @@ def get_anthropic_llm(
     return ModelFactory.create_model(ep)
 
 
+def get_lightweight_llm(
+    model_name: str,
+    temperature: float | None = None,
+    timeout: float | None = None,
+) -> BaseChatModel:
+    """Provider-aware factory for utility models configured by name only.
+
+    Gemini model names route to the Google provider; everything else goes
+    through the OpenAI-compatible endpoint (OPENAI_BASE_URL), which covers
+    DeepSeek, Qwen, Doubao and other compatible VLMs.
+    """
+    if "gemini" in model_name.lower():
+        return get_google_llm(model_name=model_name, temperature=temperature, timeout=timeout)
+    return get_openai_llm(model_name=model_name, temperature=temperature, timeout=timeout)
+
+
 def get_cached_raw_model(
     provider: str,
     model_name: str,

@@ -7,13 +7,11 @@
   // 1. Global Default Model (Applied to all sub-agents unless overridden below)
   // ------------------------------------------------------------------------------
   "default": {
-    "provider": "google",
-    "model": "gemini-3.8-flash",
-    "thinking_level": "medium",
+    "provider": "openai",
+    "model": "deepseek-flash",
     "fallback": {
-      "provider": "google",
-      "model": "gemini-3.7-flash",
-      "thinking_level": "medium"
+      "provider": "openai",
+      "model": "deepseek-flash"
     }
   },
 
@@ -75,10 +73,11 @@
     // To achieve accurate [x, y] point and bounding box localization, this node MUST use specialized Gemini ER (Embodied Reasoning / Robotics) models:
     // e.g., "gemini-robotics-er-2-preview". Non-ER models will fail spatial coordinate detection.
     "object_detector": {
-      "model": "gemini-robotics-er-2-preview",
+      "provider": "openai",
+      "model": "deepseek-flash",
       "fallback": {
-        "provider": "google",
-        "model": "gemini-robotics-er-2-preview"
+        "provider": "openai",
+        "model": "deepseek-flash"
       }
     },
 
@@ -95,10 +94,11 @@
 
     // 🔽 Hopper: Fast lightweight package name locator
     "hopper": {
-      "model": "gemini-3.5-flash-lite",
+      "provider": "openai",
+      "model": "deepseek-flash",
       "fallback": {
-        "provider": "google",
-        "model": "gemini-3.1-flash-lite"
+        "provider": "openai",
+        "model": "deepseek-flash"
       }
     },
 
@@ -107,12 +107,12 @@
 
     // 🪵 Log Analyzer: Error log diagnosis with search grounding
     "log_analyzer": {
-      "enable_grounding": true
+      "enable_grounding": false
     },
 
     // 🩺 Diagnoser Expert: Failure root cause diagnosis with search grounding
     "diagnoser_expert": {
-      "enable_grounding": true
+      "enable_grounding": false
     },
     // 🏛️ Committee Council Members
     "planner_avatar": {},
@@ -145,7 +145,7 @@
       // replacing images only after strictly objective, high-density summaries are ready.
       "step_summarizer": {
         "enabled": true, // Whether background step summarization is active
-        "model": "gemini-3.5-flash-lite", // Lightweight model for fast background inference
+        "model": "deepseek-flash", // Lightweight model for fast background inference
         "prune_history_xml": true // Prune outdated heavy XML trees from historical steps
       }
     },
@@ -246,7 +246,7 @@
         // call each); milestone closes are exempt, the hard line waives it.
         "min_steps": 3,
         "target_source_tokens": 2000,
-        "model": "gemini-3.8-flash",
+        "model": "deepseek-flash",
         "max_chunks": 8
         // "max_eras": 8 // independent era cap; omitted = follows max_chunks
       },
