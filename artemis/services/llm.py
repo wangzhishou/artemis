@@ -597,6 +597,28 @@ class RobustChatModelWrapper:
 
     def with_structured_output(self, *args, **kwargs):
         if hasattr(self.base_model, "with_structured_output"):
+            # OpenAI-compatible gateways (DeepSeek, Qwen, Doubao, ...) reject the
+            # `json_schema` response_format that langchain-openai picks by default
+            # ("This response_format type is unavailable now"), and their thinking
+            # mode refuses the forced `tool_choice` that `function_calling` uses
+            # ("Thinking mode does not support this tool_choice"). Disabling
+            # reasoning for these extraction calls makes the standard
+            # function-calling path work. `json_mode` is not an alternative: it
+            # requires the literal word "json" in the upstream prompt.
+            provider = (self._provider_value() or "").lower()
+            base_is_openai = type(self.base_model).__name__.startswith("ChatOpenAI")
+            if base_is_openai or provider in {
+                "openai",
+                "deepseek",
+                "deepseek-official",
+                "openrouter",
+                "xai",
+                "ollama",
+            }:
+                kwargs.setdefault("method", "function_calling")
+                model_name = str(getattr(self.endpoint, "model_name", "") or "")
+                if "deepseek" in model_name.lower():
+                    kwargs.setdefault("reasoning_effort", "none")
             return RobustChatModelWrapper(
                 self.base_model.with_structured_output(*args, **kwargs),
                 self.ctx,
